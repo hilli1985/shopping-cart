@@ -2,16 +2,21 @@ var ShoppingCart = function () {
 
   // an array with all of our cart items
   var cart = [];
+  let sum = 0; 
+  var source = document.getElementById("entry-template").innerHTML;
+  var template = Handlebars.compile(source);
 
   var updateCart = function () {
     // TODO: Write this function. In this function we render the page.
     // Meaning we make sure that all our cart items are displayed in the browser.
     // Remember to empty the "cart div" before you re-add all the item elements.
     $(".cart-list").empty();
-    let sum =0;
+    sum = 0; 
     for (item of cart ){
-      sum = sum + parseInt(item.price.replace('$',''));
-      $(".shopping-cart").children(".cart-list").append('<div class="item">'+item.name+' '+item.price+'</div>');
+      sum = sum + parseInt(item.price.replace('$','')*item.quantity);
+      var context = {name : item.name, price: item.price, quantity:item.quantity }
+      var html = template(context);
+      $(".cart-list").append(html);
     }
     $(".shopping-cart").find('span').text(sum);
   }
@@ -19,19 +24,39 @@ var ShoppingCart = function () {
   var addItem = function (item) {
     // TODO: Write this function. Remember this function has nothing to do with display. 
     // It simply is for adding an item to the cart array, no HTML involved - honest ;-)
-    cart.push(item);
+    if (!_findItemByName(item.name)){
+      cart.push(item);
+      return;
+    }
+    else 
+      cart[i].quantity+=1;
+  }
+
+  function _findItemByName(name) {
+    for (i in cart) {
+      if (cart[i].name==name)
+        return i 
+    }
+    return null;
   }
 
   var clearCart = function () {
     // TODO: Write a function that clears the cart ;-)
     cart = []; 
+    sum = 0;
+  }
+
+  var removeItemByName = function () {
+    let index = _findItemByName(name);
+    cart.splice(index, 1);
   }
   
   return {
     cart : cart ,
     updateCart: updateCart,
     addItem: addItem,
-    clearCart: clearCart
+    clearCart: clearCart,
+    removeItemByName : removeItemByName
   }
 };
 
@@ -59,7 +84,8 @@ $('.add-to-cart').on('click', function () {
   price = price.replace( /\s/g, '');
   let item = {
     name : name, 
-    price : price
+    price : price,
+    quantity: 1
   }
   app.addItem(item);
   app.updateCart();
@@ -68,5 +94,11 @@ $('.add-to-cart').on('click', function () {
 
 $('.clear-cart').on('click', function () {
   app.clearCart();
+  app.updateCart();
+});
+
+$('.cart-list').on('click', '.item', function () {
+  let name = ($(this).text().split("(")[0]);
+  app.removeItemByName(name);
   app.updateCart();
 });

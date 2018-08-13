@@ -24,7 +24,7 @@
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav navbar-right">
-          <li class="dropdown">
+          <li class="">
             <a href="#" class="view-cart" data-toggle="dropdown" role="button">Shopping Cart <i class="fa fa-shopping-cart"></i></a>
           </li>
         </ul>
@@ -146,10 +146,15 @@
       </div>
     </div>
   </div>
+
     <script type="text/javascript" src="jquery/dist/jquery.min.js"></script>
   <script type="text/javascript" src="bootstrap/dist/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="handlebars/dist/handlebars.min.js"></script>
-  <script></script>
+  
+  <script id="entry-template" type="text/x-handlebars-template">
+    <div class="item">{{name}} ({{quantity}}) - {{price}}</div>
+  </script>
+
   <script type="text/javascript" src="script.js"></script>
 </body>
 </html>
