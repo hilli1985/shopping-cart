@@ -1,11 +1,20 @@
 var ShoppingCart = function () {
-
+  
+  var STORAGE_ID = "shoppingCart";  
+  var getFromLocalStorage = function (STORAGE_ID) {
+    let tempvar =  JSON.parse(localStorage.getItem("shoppingCart") || '[]'); //return empty array in case of null
+    return tempvar;
+  }
+  var saveToLocalStorage = function () {
+    localStorage.setItem(STORAGE_ID, JSON.stringify(cart));
+  }
   // an array with all of our cart items
-  var cart = [];
+  var cart = getFromLocalStorage(STORAGE_ID);
+  
   let sum = 0; 
   var source = document.getElementById("entry-template").innerHTML;
   var template = Handlebars.compile(source);
-
+  
   var updateCart = function () {
     // TODO: Write this function. In this function we render the page.
     // Meaning we make sure that all our cart items are displayed in the browser.
@@ -20,35 +29,39 @@ var ShoppingCart = function () {
     }
     $(".shopping-cart").find('span').text(sum);
   }
-
+  
   var addItem = function (item) {
     // TODO: Write this function. Remember this function has nothing to do with display. 
     // It simply is for adding an item to the cart array, no HTML involved - honest ;-)
     if (!_findItemByName(item.name)){
       cart.push(item);
-      return;
     }
     else 
+    {
       cart[i].quantity+=1;
+    }
+    saveToLocalStorage();
   }
-
+  
   function _findItemByName(name) {
     for (i in cart) {
       if (cart[i].name==name)
-        return i 
+      return i 
     }
     return null;
   }
-
+  
   var clearCart = function () {
     // TODO: Write a function that clears the cart ;-)
     cart = []; 
     sum = 0;
+    saveToLocalStorage();
   }
-
+  
   var removeItemByName = function () {
     let index = _findItemByName(name);
     cart.splice(index, 1);
+    saveToLocalStorage();
   }
   
   return {
@@ -66,7 +79,6 @@ app.updateCart();
 
 
 //--------EVENTS---------
-
 $('.view-cart').on('click', function () {
   // TODO: hide/show the shopping cart!
   if (!($(".shopping-cart").attr('class').includes(' show'))){
@@ -89,7 +101,7 @@ $('.add-to-cart').on('click', function () {
   }
   app.addItem(item);
   app.updateCart();
-
+  
 });
 
 $('.clear-cart').on('click', function () {
